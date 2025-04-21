@@ -11,7 +11,11 @@
 //#include <opencv2/opencv.hpp>
 #include <thread>
 #include <Windows.h>
+<<<<<<< HEAD
 #include <numeric>
+=======
+#include <numeric>//
+>>>>>>> a02e12e (great)
 
 using namespace std;
 
@@ -35,7 +39,11 @@ using Vector4D = vector<Vector3D>;
 #define STAGE_MAX_Y WIN_MAX_Y / CELL
 #define MAR 10
 #define FLIP_SECOND 20
+<<<<<<< HEAD
 #define MODEL_USE true
+=======
+#define MODEL_USE false
+>>>>>>> a02e12e (great)
 
 enum MEN
 {
