@@ -17,7 +17,9 @@ using namespace std;
 
 
 
+
 // ok bokujou
+
 
 
 using Vector1D = vector<long double>;
