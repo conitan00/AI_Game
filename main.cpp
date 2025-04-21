@@ -20,6 +20,7 @@ using namespace std;
 
 // ok bokujou
 
+// saikyou
 
 
 using Vector1D = vector<long double>;
