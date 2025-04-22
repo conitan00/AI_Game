@@ -35,14 +35,10 @@ public:
     string action_ya[4] = { "→", "←", "↓", "↑" };
     //std::atomic<bool> check{ false };
 
-    float gamma = 0.98; // 割引率
+    float gamma = 0.99; // 割引率
     //float lr = 0.005; // 学習率
-<<<<<<< HEAD
     float epsilon = 0.05; // ε-greedy法のε
-=======
-    float epsilon = 1.0; // ε-greedy法のε
->>>>>>> a02e12e (great)
-    float e_deg_rate = 0.01;
+    float e_deg_rate = 0.005;
     float e_min = 0.05;
     int buffer_size = 10000; // バッファサイズ
     int batch_size = 32; // バッチサイズ

@@ -24,21 +24,14 @@ private:
 	std::vector<std::unique_ptr<DQNAgent>> Cha; // キャラクターの動的配列
 
 	void learn(); // 機械学習
-<<<<<<< HEAD
 	void Death(int i); // キャラ死亡時処理
-=======
-	void Death(int i); // キャラ死亡時処理あああ
->>>>>>> a02e12e (great)
 	void End(); // エピソード終了処理
 
 };
 
 ACTION_AI Act_AI;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> a02e12e (great)
 void ACTION_AI::Out() {
 
 	if (Key[KEY_INPUT_0] == 1) {

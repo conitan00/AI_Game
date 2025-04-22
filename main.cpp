@@ -43,7 +43,7 @@ using Vector4D = vector<Vector3D>;
 #define STAGE_MAX_Y WIN_MAX_Y / CELL
 #define MAR 10
 #define FLIP_SECOND 20
-#define MODEL_USE false
+#define MODEL_USE true
 
 enum MEN
 {
