@@ -94,7 +94,7 @@ void processingThread(std::atomic<bool>& clicked, bool* out) {
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 
-    SetWaitVSyncFlag(TRUE); // 60fps
+    //SetWaitVSyncFlag(TRUE); // 60fps
 
     ChangeWindowMode(TRUE); // ウィンドウモードに設定
     SetAlwaysRunFlag(TRUE);        // 非アクティブでも動作するように設定
