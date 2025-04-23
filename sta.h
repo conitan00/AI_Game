@@ -12,7 +12,7 @@ public:
 
 	//Read
 	void Read() {
-		ifstream file("C:/bomberman/stage.txt");
+		ifstream file("stage.txt");
 		string line;
 		int y = 0;
 		while (getline(file, line)) {
