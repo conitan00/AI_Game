@@ -37,11 +37,11 @@ public:
 
     float gamma = 0.99; // 割引率
     //float lr = 0.005; // 学習率
-    float epsilon = 0.05; // ε-greedy法のε
-    float e_deg_rate = 0.005;
+    float epsilon = 1.0; // ε-greedy法のε
+    float e_deg_rate = 0.01;
     float e_min = 0.05;
-    int buffer_size = 10000; // バッファサイズ
-    int batch_size = 32; // バッチサイズ
+    int buffer_size = 5000; // バッファサイズ
+    int batch_size = 16; // バッチサイズ
     static const int action_size = 4; // 行動の種類
     Vector2D diff_loss; // 誤差
 

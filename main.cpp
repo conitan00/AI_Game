@@ -11,17 +11,9 @@
 //#include <opencv2/opencv.hpp>
 #include <thread>
 #include <Windows.h>
-#include <numeric>//
+#include <numeric>
 
 using namespace std;
-
-
-
-
-// ok bokujou
-
-// saikyou
-
 
 using Vector1D = vector<long double>;
 using Vector2D = vector<Vector1D>;
@@ -43,7 +35,8 @@ using Vector4D = vector<Vector3D>;
 #define STAGE_MAX_Y WIN_MAX_Y / CELL
 #define MAR 10
 #define FLIP_SECOND 20
-#define MODEL_USE true
+
+bool model;
 
 enum MEN
 {
@@ -52,6 +45,7 @@ enum MEN
     MEN_02_Select_Cha,
     MEN_03_Action,
     MEN_04_AI,
+    MEN_05_MODELED_AI
 };
 int Sce = MEN::MEN_00_Title;
 
@@ -71,6 +65,7 @@ int Sce = MEN::MEN_00_Title;
 #include "tit.h"
 #include "sta.h"
 #include "act.h"
+#include "act_modeled_AI.h"
 #include "act_AI.h"
 #include "select_sta.h"
 #include "select_cha.h"
@@ -98,7 +93,8 @@ void processingThread(std::atomic<bool>& clicked, bool* out) {
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-    SetWaitVSyncFlag(FALSE);  // FPS制限を無効化！
+
+    SetWaitVSyncFlag(TRUE); // 60fps
 
     ChangeWindowMode(TRUE); // ウィンドウモードに設定
     SetAlwaysRunFlag(TRUE);        // 非アクティブでも動作するように設定
@@ -152,7 +148,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         case MEN::MEN_04_AI:
             Act_AI.Out();
             break;
+        case MEN::MEN_05_MODELED_AI:
+            Act_MODELED_AI.Out();
+            break;
         }
+        
     }
 
     WaitKey();      // キー入力待ち

@@ -173,6 +173,7 @@
     <ClInclude Include="act.h" />
     <ClInclude Include="activation.h" />
     <ClInclude Include="act_AI.h" />
+    <ClInclude Include="act_modeled_AI.h" />
     <ClInclude Include="CNN.h" />
     <ClInclude Include="ConvolutionLayer.h" />
     <ClInclude Include="DQN.h" />

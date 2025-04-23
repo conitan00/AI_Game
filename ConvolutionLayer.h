@@ -220,22 +220,25 @@ public:
         }
 
         // パラメータ更新
-        for (int out = 0; out < out_channel; out++) {
-            m1_b[out] = beta1 * m1_b[out] + (1 - beta1) * d_bias[out];
-            m2_b[out] = beta2 * m2_b[out] + (1 - beta2) * d_bias[out] * d_bias[out];
-            long double m1b = m1_b[out] / (1 - pow(beta1, t));
-            long double m2b = m2_b[out] / (1 - pow(beta2, t));
-            bias[out] -= lr * (m1b / (sqrt(m2b) + e)); // バイアス
-            //bias[out] -= lr * d_bias[out];
-            for (int in = 0; in < in_channel; in++) {
-                for (int h = 0; h < kernel_size; h++) {
-                    for (int w = 0; w < kernel_size; w++) {
-                        m1_k[out][in][h][w] = beta1 * m1_k[out][in][h][w] + (1 - beta1) * d_kernel[out][in][h][w];
-                        m2_k[out][in][h][w] = beta2 * m2_k[out][in][h][w] + (1 - beta2) * d_kernel[out][in][h][w] * d_kernel[out][in][h][w];
-                        long double m1k = m1_k[out][in][h][w] / (1 - pow(beta1, t));
-                        long double m2k = m2_k[out][in][h][w] / (1 - pow(beta2, t));
-                        kernel[out][in][h][w] -= lr * (m1k / (sqrt(m2k) + e)); // カーネル
-                        //kernel[out][in][h][w] -= lr * d_kernel[out][in][h][w];
+
+        if (!model) {
+            for (int out = 0; out < out_channel; out++) {
+                m1_b[out] = beta1 * m1_b[out] + (1 - beta1) * d_bias[out];
+                m2_b[out] = beta2 * m2_b[out] + (1 - beta2) * d_bias[out] * d_bias[out];
+                long double m1b = m1_b[out] / (1 - pow(beta1, t));
+                long double m2b = m2_b[out] / (1 - pow(beta2, t));
+                bias[out] -= lr * (m1b / (sqrt(m2b) + e)); // バイアス
+                //bias[out] -= lr * d_bias[out];
+                for (int in = 0; in < in_channel; in++) {
+                    for (int h = 0; h < kernel_size; h++) {
+                        for (int w = 0; w < kernel_size; w++) {
+                            m1_k[out][in][h][w] = beta1 * m1_k[out][in][h][w] + (1 - beta1) * d_kernel[out][in][h][w];
+                            m2_k[out][in][h][w] = beta2 * m2_k[out][in][h][w] + (1 - beta2) * d_kernel[out][in][h][w] * d_kernel[out][in][h][w];
+                            long double m1k = m1_k[out][in][h][w] / (1 - pow(beta1, t));
+                            long double m2k = m2_k[out][in][h][w] / (1 - pow(beta2, t));
+                            kernel[out][in][h][w] -= lr * (m1k / (sqrt(m2k) + e)); // カーネル
+                            //kernel[out][in][h][w] -= lr * d_kernel[out][in][h][w];
+                        }
                     }
                 }
             }

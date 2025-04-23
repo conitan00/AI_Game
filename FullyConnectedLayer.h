@@ -163,25 +163,28 @@ public:
         }
 
         // パラメータ更新
-        // 重み
-        for (int i = 0; i < weight.size(); i++) {
-            for (int j = 0; j < weight[0].size(); j++) {
-                m1_w[i][j] = beta1 * m1_w[i][j] + (1 - beta1) * grad_weight[i][j];
-                m2_w[i][j] = beta2 * m2_w[i][j] + (1 - beta2) * grad_weight[i][j] * grad_weight[i][j];
-                long double m1 = m1_w[i][j] / (1 - pow(beta1, t));
-                long double m2 = m2_w[i][j] / (1 - pow(beta2, t));
-                weight[i][j] -= lr * (m1 / (sqrt(m2) + e));
-                //weight[i][j] -= lr * grad_weight[i][j];
+        
+        if (!model) {
+            // 重み
+            for (int i = 0; i < weight.size(); i++) {
+                for (int j = 0; j < weight[0].size(); j++) {
+                    m1_w[i][j] = beta1 * m1_w[i][j] + (1 - beta1) * grad_weight[i][j];
+                    m2_w[i][j] = beta2 * m2_w[i][j] + (1 - beta2) * grad_weight[i][j] * grad_weight[i][j];
+                    long double m1 = m1_w[i][j] / (1 - pow(beta1, t));
+                    long double m2 = m2_w[i][j] / (1 - pow(beta2, t));
+                    weight[i][j] -= lr * (m1 / (sqrt(m2) + e));
+                    //weight[i][j] -= lr * grad_weight[i][j];
+                }
             }
-        }
-        // バイアス
-        for (int i = 0; i < bias.size(); i++) {
-            m1_b[i] = beta1 * m1_b[i] + (1 - beta1) * grad_bias[i];
-            m2_b[i] = beta2 * m2_b[i] + (1 - beta2) * grad_bias[i] * grad_bias[i];
-            long double m1 = m1_b[i] / (1 - pow(beta1, t));
-            long double m2 = m2_b[i] / (1 - pow(beta2, t));
-            bias[i] -= lr * (m1 / (sqrt(m2) + e));
-            //bias[i] -= lr * grad_bias[i];
+            // バイアス
+            for (int i = 0; i < bias.size(); i++) {
+                m1_b[i] = beta1 * m1_b[i] + (1 - beta1) * grad_bias[i];
+                m2_b[i] = beta2 * m2_b[i] + (1 - beta2) * grad_bias[i] * grad_bias[i];
+                long double m1 = m1_b[i] / (1 - pow(beta1, t));
+                long double m2 = m2_b[i] / (1 - pow(beta2, t));
+                bias[i] -= lr * (m1 / (sqrt(m2) + e));
+                //bias[i] -= lr * grad_bias[i];
+            }
         }
 
         t++;

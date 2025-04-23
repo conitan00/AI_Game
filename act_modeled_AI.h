@@ -1,6 +1,6 @@
 #pragma once
 
-class ACTION_AI {
+class ACTION_MODELED_AI {
 
 public:
 	void Out();
@@ -29,10 +29,10 @@ private:
 
 };
 
-ACTION_AI Act_AI;
+ACTION_MODELED_AI Act_MODELED_AI;
 
 
-void ACTION_AI::Out() {
+void ACTION_MODELED_AI::Out() {
 
 	if (Key[KEY_INPUT_0] == 1) {
 		Cha[0]->qnet.save = true;
@@ -41,7 +41,7 @@ void ACTION_AI::Out() {
 	cnt++;
 
 	// 全キャラに対して移動・爆弾の設置を実行
-	for (int i = 0; i < ACTION_AI::numCha; i++) {
+	for (int i = 0; i < ACTION_MODELED_AI::numCha; i++) {
 		if (Cha[i]->death) continue;
 
 		// キャラクターが何セル目に位置するか記録
@@ -119,7 +119,7 @@ void ACTION_AI::Out() {
 
 	Sta.Out(); // ステージ描画
 
-	for (int i = 0; i < ACTION_AI::numCha; i++) {
+	for (int i = 0; i < ACTION_MODELED_AI::numCha; i++) {
 		if (Cha[i]->death) continue;
 		for (int b = 0; b < num_bom; b++) {
 			if (Cha[i]->boms[b].exist) {
@@ -144,7 +144,7 @@ void ACTION_AI::Out() {
 								else if (Cha[i]->boms[b].time >= 0.5) DrawRotaGraph(Cha[i]->boms[b].X + fireLength * Dirs[fireDir][0] * CELL, Cha[i]->boms[b].Y + fireLength * Dirs[fireDir][1] * CELL, 1.0, 0, Pic.Bom[34], TRUE);
 								else if (Cha[i]->boms[b].time >= 0.0) DrawRotaGraph(Cha[i]->boms[b].X + fireLength * Dirs[fireDir][0] * CELL, Cha[i]->boms[b].Y + fireLength * Dirs[fireDir][1] * CELL, 1.0, 0, Pic.Bom[35], TRUE);
 
-								for (int k = 0; k < ACTION_AI::numCha; k++) {
+								for (int k = 0; k < ACTION_MODELED_AI::numCha; k++) {
 									if (Cha[k]->death) continue;
 									if (Cha[i]->boms[b].X_cell + fireLength * Dirs[fireDir][0] == Cha[k]->X_cell && Cha[i]->boms[b].Y_cell + fireLength * Dirs[fireDir][1] == Cha[k]->Y_cell)
 									{
@@ -191,14 +191,14 @@ void ACTION_AI::Out() {
 		}
 	}
 
-	for (int i = 0; i < ACTION_AI::numCha; i++) {
+	for (int i = 0; i < ACTION_MODELED_AI::numCha; i++) {
 		int p = (cnt / 12) % 3;
 		if (!Cha[i]->death) {
 			DrawRotaGraph(Cha[i]->X, Cha[i]->Y, 1.0, 0, Pic.Cat[Cha[i]->picID][Cha[i]->Dir * 3 + p], TRUE);
 		}
 	}
 
-	for (int i = 0; i < ACTION_AI::numCha; i++) {
+	for (int i = 0; i < ACTION_MODELED_AI::numCha; i++) {
 		if (Cha[i]->death) Death(i);
 	}
 
@@ -208,7 +208,7 @@ void ACTION_AI::Out() {
 
 
 // 機械学習
-void ACTION_AI::learn() {
+void ACTION_MODELED_AI::learn() {
 
 	//Vector3D state(2, Vector2D(STAGE_MAX_Y, Vector1D(STAGE_MAX_X, 0.0))); // 状態を初期化（自分の位置、敵の位置、爆弾の位置）
 
@@ -286,7 +286,7 @@ void ACTION_AI::learn() {
 		}
 	}
 
-	double reward = 0.00;
+	double reward = 0.01;
 
 	if (!Cha[0]->state_pre.empty()) {
 		Memory memory = { Cha[0]->state_pre, Cha[0]->action_pre, reward, state, false, Cha[0]->mask_pre, mask };
@@ -300,14 +300,14 @@ void ACTION_AI::learn() {
 }
 
 // 初期化
-void ACTION_AI::init() {
+void ACTION_MODELED_AI::init() {
 
 	// キャラ数分のエージェントオブジェクトを作成
 	Cha.clear();
 	for (int i = 0; i < numCha; ++i) {
 		Cha.push_back(std::make_unique<DQNAgent>());
 	}
-	
+
 	// 各キャラのメンバ変数初期化
 	for (int i = 0; i < numCha; i++)
 	{
@@ -332,13 +332,13 @@ void ACTION_AI::init() {
 	// AIキャラのデザインを設定
 	Cha[0]->picID = 10;
 
-	// FPS制限を無効にする（無限フレームレート）
-	SetWaitVSyncFlag(FALSE);
+	Cha[0]->epsilon = 0.0;
+
 
 }
 
 // 各キャラの
-void ACTION_AI::Death(int i) {
+void ACTION_MODELED_AI::Death(int i) {
 
 	Cha[i]->death_cnt--;
 	if (Cha[i]->death_cnt >= 0) {
@@ -348,7 +348,7 @@ void ACTION_AI::Death(int i) {
 }
 
 // エピソード終了時の処理
-void ACTION_AI::End() {
+void ACTION_MODELED_AI::End() {
 
 	// 画面切り替えまでの時間を計測
 	endCnt--;
@@ -415,7 +415,7 @@ void ACTION_AI::End() {
 			}
 			cout << endl << endl;
 		}
-		
+
 		// 10エピソードごとにε(を減少させる
 		if (episode % 10 == 0 && Cha[0]->epsilon >= Cha[0]->e_min) {
 			Cha[0]->epsilon -= Cha[0]->e_deg_rate;
@@ -426,7 +426,7 @@ void ACTION_AI::End() {
 		if (episode % 20 == 0) {
 			Cha[0]->sync_qnet();
 		}
-		
+
 	}
 
 }
