@@ -29,6 +29,8 @@ public:
     int action_pre = 0;
     int win_num = 0;
     int win_num_tmp = 0;
+    bool kill = false;
+
     ///
 
     string action_name[4] = { "right", "left", "down", "up" };
@@ -42,7 +44,7 @@ public:
     float e_min = 0.05;
     int buffer_size = 5000; // バッファサイズ
     int batch_size = 16; // バッチサイズ
-    static const int action_size = 4; // 行動の種類
+    static const int action_size = 8; // 行動の種類
     Vector2D diff_loss; // 誤差
 
     ReplayBuffer replay_buffer = { buffer_size, batch_size };

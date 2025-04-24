@@ -13,7 +13,7 @@ private:
 	int numDeath = 0;
 	int cnt = 0; // キャラの方向描画のためのカウント
 	static const int numAI = 1; // AIキャラ数
-	static const int numEne = 1; // 敵キャラ数
+	static const int numEne = 3; // 敵キャラ数
 	static const int numCha = numAI + numEne; // 総キャラ数
 	static const int num_bom = 10; // 最大ボムストック数
 	bool end = false; // エピソード終了フラグ
@@ -92,22 +92,6 @@ void ACTION_MODELED_AI::Out() {
 
 				learn();
 
-				//AIキャラの爆弾設置
-				random_device dd;
-				mt19937 fen(dd());
-				uniform_int_distribution<int> dis(1, 100);
-				if (Cha[i]->AorE == "AI") {
-					// 10%の確率で爆弾を設置
-					if (dis(fen) <= 10) {
-						// 空いている爆弾の位置を探して設置
-						for (int j = 0; j < num_bom; j++) {
-							if (Cha[i]->boms[j].exist == false) {
-								Cha[i]->boms[j] = { true, 9.0, CELL * Cha[i]->X_cell + CELL / 2, CELL * Cha[i]->Y_cell + CELL / 2, Cha[i]->X_cell, Cha[i]->Y_cell };
-								break; // 1回だけ爆弾を置いてループを抜ける
-							}
-						}
-					}
-				}
 			}
 			Cha[i]->X += Dirs[Cha[i]->Dir][0] * Mov;
 			Cha[i]->Y += Dirs[Cha[i]->Dir][1] * Mov;
@@ -155,6 +139,14 @@ void ACTION_MODELED_AI::Out() {
 												if (k == 0) {
 													// 行動不可の選択肢に関するマスク
 													vector<bool> mask;
+													if (Cha[0]->Y_cell == STAGE_MAX_Y - 1) { mask.push_back(true); }
+													else { mask.push_back(false); }
+													if (Cha[0]->X_cell == 0) { mask.push_back(true); }
+													else { mask.push_back(false); }
+													if (Cha[0]->X_cell == STAGE_MAX_X - 1) { mask.push_back(true); }
+													else { mask.push_back(false); }
+													if (Cha[0]->Y_cell == 0) { mask.push_back(true); }
+													else { mask.push_back(false); }
 													if (Cha[0]->Y_cell == STAGE_MAX_Y - 1) { mask.push_back(true); }
 													else { mask.push_back(false); }
 													if (Cha[0]->X_cell == 0) { mask.push_back(true); }
@@ -231,8 +223,7 @@ void ACTION_MODELED_AI::learn() {
 	//		}
 	//	}
 	//}
-
-	Vector3D state(1, Vector2D(2 * range + 1, Vector1D(2 * range + 1, 0.0))); // 状態を初期化（爆弾の位置）
+	Vector3D state(2, Vector2D(2 * range + 1, Vector1D(2 * range + 1, 0.0))); // 状態を初期化（爆弾の位置、敵の位置）
 
 	for (int i = 0; i < numCha; i++) {
 		Cha[i]->X_cell = Cha[i]->X / CELL;
@@ -242,11 +233,18 @@ void ACTION_MODELED_AI::learn() {
 	// ボム、キャラの位置を保存
 	for (const auto& cha : Cha) {
 
+		if (cha != Cha[0]) {
+			if (Cha[0]->X_cell - range <= cha->X_cell && cha->X_cell <= Cha[0]->X_cell + range &&
+				Cha[0]->Y_cell - range <= cha->Y_cell && cha->Y_cell <= Cha[0]->Y_cell + range) {
+				state[0][range + (cha->Y_cell - Cha[0]->Y_cell)][range + (cha->X_cell - Cha[0]->X_cell)] = 1.0;
+			}
+		}
+
 		for (const auto& bom : cha->boms) {
 			if (bom.exist) {
 				if (Cha[0]->X_cell - range <= bom.X_cell && bom.X_cell <= Cha[0]->X_cell + range &&
 					Cha[0]->Y_cell - range <= bom.Y_cell && bom.Y_cell <= Cha[0]->Y_cell + range) {
-					state[0][range + (bom.Y_cell - Cha[0]->Y_cell)][range + (bom.X_cell - Cha[0]->X_cell)] = 1.0;
+					state[1][range + (bom.Y_cell - Cha[0]->Y_cell)][range + (bom.X_cell - Cha[0]->X_cell)] = 1.0;
 				}
 			}
 		}
@@ -264,9 +262,27 @@ void ACTION_MODELED_AI::learn() {
 	else { mask.push_back(false); }
 	if (Cha[0]->Y_cell == 0) { mask.push_back(true); }
 	else { mask.push_back(false); }
+	if (Cha[0]->Y_cell == STAGE_MAX_Y - 1) { mask.push_back(true); }
+	else { mask.push_back(false); }
+	if (Cha[0]->X_cell == 0) { mask.push_back(true); }
+	else { mask.push_back(false); }
+	if (Cha[0]->X_cell == STAGE_MAX_X - 1) { mask.push_back(true); }
+	else { mask.push_back(false); }
+	if (Cha[0]->Y_cell == 0) { mask.push_back(true); }
+	else { mask.push_back(false); }
 	// --------------------------------
 
 	int tempDir = Cha[0]->get_action(state, mask);
+	// 爆弾を設置
+	if (tempDir >= 4) {
+		for (int j = 0; j < num_bom; j++) {
+			if (Cha[0]->boms[j].exist == false) {
+				Cha[0]->boms[j] = { true, 9.0, CELL * Cha[0]->X_cell + CELL / 2, CELL * Cha[0]->Y_cell + CELL / 2, Cha[0]->X_cell, Cha[0]->Y_cell };
+				break; // 1回だけ爆弾を置いてループを抜ける
+			}
+		}
+	}
+	tempDir = tempDir % 4;
 	if (0 <= Cha[0]->X_cell + Dirs[tempDir][0] && Cha[0]->X_cell + Dirs[tempDir][0] < STAGE_MAX_X && 0 <= Cha[0]->Y_cell + Dirs[tempDir][1] && Cha[0]->Y_cell + Dirs[tempDir][1] < STAGE_MAX_Y)
 	{
 		Cha[0]->Dir = tempDir;
