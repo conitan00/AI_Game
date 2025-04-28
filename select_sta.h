@@ -54,8 +54,8 @@ public:
 				}
 				if (LogType == MOUSE_INPUT_LOG_DOWN && 237 <= ClickX && ClickX <= 633 && 448 <= ClickY && ClickY <= 531) {
 					model = true;
-					Act_MODELED_AI.init();
-					Sce = MEN::MEN_05_MODELED_AI;
+					Act_AI.init();
+					Sce = MEN::MEN_04_AI;
 				}
 			}
 		}

@@ -273,6 +273,7 @@ void ACTION_MODELED_AI::learn() {
 	// --------------------------------
 
 	int tempDir = Cha[0]->get_action(state, mask);
+	cout << tempDir;
 	// ”š’e‚ðÝ’u
 	if (tempDir >= 4) {
 		for (int j = 0; j < num_bom; j++) {

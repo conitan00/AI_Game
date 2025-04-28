@@ -8,7 +8,7 @@ private:
 
 public:
 
-    float lr = 0.00005; // 学習率
+    float lr = 0.00001; // 学習率
     Activation activation;
     ActivationID activationID; // 活性化関数
 

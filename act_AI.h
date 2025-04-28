@@ -19,7 +19,7 @@ private:
 	bool end = false; // エピソード終了フラグ
 	int endCnt = 100; // エピソード終了演出時間
 	const int Mov = CELL / 20; // 移動距離
-	int Dirs[4][2] = { {0, 1}, {-1, 0}, {1, 0}, {0, -1} }; // 移動方向（下左右上）
+	int Dirs[8][2] = { {0, 1}, {-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {0, -1} }; // 移動方向（下左右上）
 	int initPosCha[4][2] = { {CELL / 2, CELL / 2}, {POS_MAX_X - CELL / 2, POS_MAX_Y - CELL / 2}, {POS_MAX_X - CELL / 2, CELL / 2}, {CELL / 2, POS_MAX_Y - CELL / 2} }; // キャラクターの初期座標（4キャラ分）
 	std::vector<std::unique_ptr<DQNAgent>> Cha; // キャラクターの動的配列
 
@@ -171,7 +171,7 @@ void ACTION_AI::Out() {
 													if (Cha[0]->Y_cell == 0) { mask.push_back(true); }
 													else { mask.push_back(false); }
 													// --------------------------------
-													Memory memory = { Cha[0]->state_pre, Cha[0]->action_pre, -5, Cha[0]->state_pre, true, Cha[0]->mask_pre, mask };
+													Memory memory = { Cha[0]->state_pre, Cha[0]->action_pre, -1, Cha[0]->state_pre, true, Cha[0]->mask_pre, mask };
 													Cha[0]->update(memory);
 												}
 											}
@@ -288,9 +288,13 @@ void ACTION_AI::learn() {
 	else { mask.push_back(false); }
 	// --------------------------------
 
+	double reward = 0.0;
+
 	int tempDir = Cha[0]->get_action(state, mask);
+	cout << tempDir;
 	// 爆弾を設置
-	if (tempDir >= 4){
+	if (tempDir < 4){
+		//reward += 0.1;
 		for (int j = 0; j < num_bom; j++) {
 			if (Cha[0]->boms[j].exist == false) {
 				Cha[0]->boms[j] = { true, 9.0, CELL * Cha[0]->X_cell + CELL / 2, CELL * Cha[0]->Y_cell + CELL / 2, Cha[0]->X_cell, Cha[0]->Y_cell };
@@ -298,7 +302,6 @@ void ACTION_AI::learn() {
 			}
 		}
 	}
-	tempDir = tempDir % 4;
 	if (0 <= Cha[0]->X_cell + Dirs[tempDir][0] && Cha[0]->X_cell + Dirs[tempDir][0] < STAGE_MAX_X && 0 <= Cha[0]->Y_cell + Dirs[tempDir][1] && Cha[0]->Y_cell + Dirs[tempDir][1] < STAGE_MAX_Y)
 	{
 		Cha[0]->Dir = tempDir;
@@ -308,7 +311,7 @@ void ACTION_AI::learn() {
 		while (true) {
 			random_device rd;
 			mt19937 gen(rd());
-			uniform_int_distribution<int> dist(0, 3);
+			uniform_int_distribution<int> dist(0, 7);
 			int tempDir = dist(gen);
 			if (0 < Cha[0]->X + Dirs[tempDir][0] * CELL && Cha[0]->X + Dirs[tempDir][0] * CELL < POS_MAX_X &&
 				0 < Cha[0]->Y + Dirs[tempDir][1] * CELL && Cha[0]->Y + Dirs[tempDir][1] * CELL < POS_MAX_Y) {
@@ -318,9 +321,8 @@ void ACTION_AI::learn() {
 		}
 	}
 
-	double reward = 0.00;
 	if (Cha[0]->kill) {
-		reward += 0.5;
+		reward += 0.1;
 		Cha[0]->kill = false;
 	}
 
@@ -368,8 +370,12 @@ void ACTION_AI::init() {
 	// AIキャラのデザインを設定
 	Cha[0]->picID = 10;
 
+	if (model) {
+		Cha[0]->epsilon = 0.0;
+	}
+
 	// FPS制限を無効にする（無限フレームレート）
-	SetWaitVSyncFlag(FALSE);
+	//SetWaitVSyncFlag(FALSE);
 
 }
 

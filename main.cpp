@@ -13,6 +13,8 @@
 #include <Windows.h>
 #include <numeric>
 
+// okokokokkokokok
+
 using namespace std;
 
 using Vector1D = vector<long double>;
@@ -94,7 +96,7 @@ void processingThread(std::atomic<bool>& clicked, bool* out) {
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 
-    //SetWaitVSyncFlag(FALSE); // 無限fps
+    SetWaitVSyncFlag(FALSE); // 無限fps
 
     ChangeWindowMode(TRUE); // ウィンドウモードに設定
     SetAlwaysRunFlag(TRUE);        // 非アクティブでも動作するように設定
