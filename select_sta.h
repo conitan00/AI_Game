@@ -29,21 +29,21 @@ public:
 		
 
 			DrawBox(237, 188, 633, 271, Col.Whi, FALSE);
-			DrawFormatStringToHandle(350, 210, Col.Whi, Fon.c[38], "対人モード");
+			DrawFormatStringToHandle(310, 210, Col.Whi, Fon.c[38], "友達と対戦する");
 
 			DrawBox(237, 318, 633, 401, Col.Whi, FALSE);
-			DrawFormatStringToHandle(330, 340, Col.Whi, Fon.c[38], "AI学習モード");
+			DrawFormatStringToHandle(310, 340, Col.Whi, Fon.c[38], "AIを学習させる");
 
 			DrawBox(237, 448, 633, 531, Col.Whi, FALSE);
-			DrawFormatStringToHandle(330, 470, Col.Whi, Fon.c[38], "AI対戦モード");
+			DrawFormatStringToHandle(270, 470, Col.Whi, Fon.c[38], "学習済みAIを観戦する");
 		}
 
 		int Button, ClickX, ClickY, LogType;
 		if (GetMouseInputLog2(&Button, &ClickX, &ClickY, &LogType, TRUE) == 0) {
 			if ((Button & MOUSE_INPUT_LEFT) != 0) {
 				if (LogType == MOUSE_INPUT_LOG_DOWN && 237 <= ClickX && ClickX <= 633 && 188 <= ClickY && ClickY <= 271) {
-					Act.numPla = 1;
-					Act.numEne = 2;
+					Act.numPla = 2;
+					Act.numEne = 0;
 					Act.numCha = Act.numPla + Act.numEne;
 					Sce = MEN::MEN_02_Select_Cha;
 				}

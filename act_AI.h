@@ -291,7 +291,6 @@ void ACTION_AI::learn() {
 	double reward = 0.0;
 
 	int tempDir = Cha[0]->get_action(state, mask);
-	cout << tempDir;
 	// ”š’e‚ðÝ’u
 	if (tempDir < 4){
 		//reward += 0.1;
