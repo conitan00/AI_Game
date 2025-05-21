@@ -35,7 +35,7 @@ public:
 			DrawFormatStringToHandle(310, 340, Col.Whi, Fon.c[38], "AI‚ğŠwK‚³‚¹‚é");
 
 			DrawBox(237, 448, 633, 531, Col.Whi, FALSE);
-			DrawFormatStringToHandle(270, 470, Col.Whi, Fon.c[38], "ŠwKÏ‚İAI‚ğŠÏí‚·‚é");
+			DrawFormatStringToHandle(250, 470, Col.Whi, Fon.c[36], "ŠwKÏ‚İAI‚Æ‘Îí‚·‚é");
 		}
 
 		int Button, ClickX, ClickY, LogType;
@@ -54,8 +54,8 @@ public:
 				}
 				if (LogType == MOUSE_INPUT_LOG_DOWN && 237 <= ClickX && ClickX <= 633 && 448 <= ClickY && ClickY <= 531) {
 					model = true;
-					Act_AI.init();
-					Sce = MEN::MEN_04_AI;
+					Act_PvsAI.init();
+					Sce = MEN::MEN_05_PvsAI;
 				}
 			}
 		}

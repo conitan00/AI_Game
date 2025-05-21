@@ -47,7 +47,7 @@ enum MEN
     MEN_02_Select_Cha,
     MEN_03_Action,
     MEN_04_AI,
-    MEN_05_MODELED_AI
+    MEN_05_PvsAI
 };
 int Sce = MEN::MEN_00_Title;
 
@@ -69,6 +69,7 @@ int Sce = MEN::MEN_00_Title;
 #include "act.h"
 #include "act_modeled_AI.h"
 #include "act_AI.h"
+#include "act_PvsAI.h"
 #include "select_sta.h"
 #include "select_cha.h"
 
@@ -150,8 +151,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         case MEN::MEN_04_AI:
             Act_AI.Out();
             break;
-        case MEN::MEN_05_MODELED_AI:
-            Act_MODELED_AI.Out();
+        case MEN::MEN_05_PvsAI:
+            Act_PvsAI.Out();
             break;
         }
         
